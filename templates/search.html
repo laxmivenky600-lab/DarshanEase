@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Temples - DarshanHub</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS Animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            background-color: var(--bg-light);
+        }
+        .search-hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('/static/images/tirumala4 - Copy.jpg') center/cover no-repeat;
+            padding: 80px 0;
+            color: white;
+        }
+        .result-img {
+            max-height: 350px;
+            object-fit: cover;
+            width: 100%;
+            border-radius: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sticky Glassmorphic Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-premium sticky-top py-3">
+        <div class="container">
+            <a class="navbar-brand-premium d-flex align-items-center" href="/">
+                <i class="fa-solid fa-gopuram me-2 text-warning"></i>
+                <span>DarshanHub</span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link text-dark fw-medium px-3" href="/dashboard"><i class="fa-solid fa-gauge-high me-1 text-warning"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark fw-medium px-3" href="/temples"><i class="fa-solid fa-church me-1 text-warning"></i> Temples</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark fw-medium px-3 active" href="/search"><i class="fa-solid fa-magnifying-glass me-1 text-warning"></i> Search</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark fw-medium px-3" href="/my_bookings"><i class="fa-solid fa-ticket me-1 text-warning"></i> My Bookings</a></li>
+                </ul>
+                <div class="d-flex align-items-center gap-2">
+                    {% if session.get('user') %}
+                        <span class="text-muted small me-2 d-none d-lg-inline"><i class="fa-solid fa-circle-user text-success"></i> {{ session.get('user') }}</span>
+                        <a href="/logout" class="btn-premium"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                    {% else %}
+                        <a href="/login" class="btn-premium-outline"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Hero Section -->
+    <section class="search-hero text-center mb-5">
+        <div class="container" data-aos="fade-up">
+            <h1 class="display-4 fw-bold heritage-font text-warning mb-3">Search Listed Temples</h1>
+            <p class="lead mb-4 mx-auto text-white-50" style="max-width: 600px;">Search our database to look up address details, opening timings, and schedule slots.</p>
+            
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="glass-card p-3">
+                        <form method="POST">
+                            <div class="input-group">
+                                <span class="input-group-text bg-transparent border-end-0 text-warning"><i class="fa-solid fa-gopuram"></i></span>
+                                <input type="text" name="temple" class="form-control border-start-0 custom-input" placeholder="Enter temple name (e.g. Tirumala)..." required>
+                                <button type="submit" class="btn-premium px-4"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Results Section -->
+    <section class="py-4">
+        <div class="container">
+            {% if result %}
+                <!-- Found Result Layout -->
+                <div class="row justify-content-center mb-5" data-aos="fade-up">
+                    <div class="col-lg-9">
+                        <div class="card border-0 shadow-lg p-5 glass-card text-start text-dark">
+                            <div class="row g-4 align-items-center">
+                                <!-- Image & Shortcuts Left -->
+                                <div class="col-md-5">
+                                    {% if result[6] %}
+                                        <img src="/static/{{ result[6] }}" alt="{{ result[0] }}" class="result-img shadow-sm mb-3">
+                                    {% else %}
+                                        <img src="/static/images/tirumala1.jpg" alt="{{ result[0] }}" class="result-img shadow-sm mb-3">
+                                    {% endif %}
+                                    
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <a href="{{ url_for('temple_gallery', temple_name=result[0]) }}" class="btn btn-sm btn-outline-secondary w-100 py-2"><i class="fa-solid fa-images me-1"></i> Gallery</a>
+                                        </div>
+                                        <div class="col-6">
+                                            <a href="{{ url_for('temple_reviews', temple_name=result[0]) }}" class="btn btn-sm btn-outline-warning w-100 py-2"><i class="fa-solid fa-star me-1"></i> Reviews</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Details Right -->
+                                <div class="col-md-7">
+                                    <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill shadow-sm mb-2"><i class="fa-solid fa-location-dot me-1"></i> {{ result[2] }}, {{ result[1] }}</span>
+                                    <h2 class="heritage-font fw-bold mb-3" style="font-size: 2rem;">{{ result[0] }}</h2>
+                                    
+                                    <!-- Schedule block -->
+                                    <div class="p-3 bg-light rounded-3 mb-4 d-flex justify-content-between text-center border border-light">
+                                        <div>
+                                            <span class="small text-muted d-block"><i class="fa-regular fa-clock text-warning"></i> Opening Time</span>
+                                            <span class="fw-bold text-dark">{{ result[3] }}</span>
+                                        </div>
+                                        <div class="border-start border-secondary-subtle"></div>
+                                        <div>
+                                            <span class="small text-muted d-block"><i class="fa-regular fa-clock text-warning"></i> Closing Time</span>
+                                            <span class="fw-bold text-dark">{{ result[4] }}</span>
+                                        </div>
+                                    </div>
+
+                                    <h5 class="fw-bold mb-2 text-dark">About Destination</h5>
+                                    <p class="text-muted small mb-4">{{ result[5] }}</p>
+                                    
+                                    <!-- Book action, wait, we don't have temple ID here! In app.py line 204:
+                                         result = cursor.fetchone() from SELECT temple_name, state, city, opening_time, closing_time, description, image FROM temples
+                                         So result does NOT select ID! We can just direct the user to /temples to book, or wait, since we don't have ID, we can redirect them to /temples which shows all temples with book buttons. This is perfectly correct and preserves backend code! Let's do that. -->
+                                    <a href="/temples" class="btn-premium w-100 py-3 text-center"><i class="fa-solid fa-ticket me-1"></i> Book Darshan Permit</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% elif request.method == 'POST' %}
+                <!-- No Result State -->
+                <div class="row justify-content-center mb-5" data-aos="fade-up">
+                    <div class="col-md-6 text-center">
+                        <div class="glass-card p-5 text-dark">
+                            <div class="mb-3 text-danger" style="font-size: 3rem;"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <h4 class="fw-bold heritage-font mb-2">Temple Not Found</h4>
+                            <p class="text-muted mb-4">No matching temple details found in our system directory database. Try searching for "Tirumala" or "Srisailam".</p>
+                            <a href="/temples" class="btn-premium px-4"><i class="fa-solid fa-list-ul me-1"></i> Browse All Temples</a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="text-center mt-4">
+                <a href="/dashboard" class="btn-premium-outline px-4"><i class="fa-solid fa-circle-left me-1"></i> Back to Dashboard</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Beautiful Premium Footer -->
+    <footer class="footer-premium text-white py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="heritage-font text-warning text-uppercase mb-4"><i class="fa-solid fa-gopuram text-warning me-2"></i> DarshanHub</h5>
+                    <p class="text-muted">A modern platform dedicated to making heritage and spiritual temple booking simple, secure, and accessible to everyone.</p>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/temples">Explore Temples</a></li>
+                        <li class="mb-2"><a href="/search">Search</a></li>
+                        <li class="mb-2"><a href="/feedback">Feedback</a></li>
+                        <li class="mb-2"><a href="/partner">Partner With Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5>Pilgrimage Sites</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/temples">Tirupati Balaji</a></li>
+                        <li class="mb-2"><a href="/temples">Srisailam Mallikarjuna</a></li>
+                        <li class="mb-2"><a href="/temples">Vijayawada Kanaka Durga</a></li>
+                        <li class="mb-2"><a href="/temples">Ainavilli Ganesha</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5>Contact Us</h5>
+                    <ul class="list-unstyled text-muted">
+                        <li class="mb-2"><i class="fa-solid fa-location-dot text-warning me-2"></i> Devotional Center, Suite 108, Vijayawada</li>
+                        <li class="mb-2"><i class="fa-solid fa-phone text-warning me-2"></i> +91 1800-DE-DEVOTION</li>
+                        <li class="mb-2"><i class="fa-solid fa-envelope text-warning me-2"></i> contact@darshanhub.com</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 border-secondary">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 text-muted">&copy; 2026 DarshanHub. All Rights Reserved. Devotedly Designed.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS Animations JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Custom Main JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - DarshanHub</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS Animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            background-color: #f3f4f6;
+        }
+        .dashboard-title-admin {
+            font-size: 2.5rem;
+            color: var(--primary);
+            font-weight: 800;
+        }
+        .metric-card {
+            border-radius: 20px;
+            border-left: 5px solid transparent;
+        }
+        .metric-card.users { border-left-color: #0d6efd; }
+        .metric-card.bookings { border-left-color: #198754; }
+        .metric-card.approved { border-left-color: #ffc107; }
+        .metric-card.rejected { border-left-color: #dc3545; }
+        
+        .admin-nav-card {
+            background: white;
+            border-radius: 16px;
+            transition: var(--transition);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .admin-nav-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border-color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sticky Glassmorphic Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-premium sticky-top py-3">
+        <div class="container">
+            <a class="navbar-brand-premium d-flex align-items-center" href="/admin">
+                <i class="fa-solid fa-user-shield me-2 text-warning"></i>
+                <span>DarshanHub Admin</span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link text-dark fw-medium px-3 active" href="/admin"><i class="fa-solid fa-chart-line me-1 text-warning"></i> Statistics</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark fw-medium px-3" href="/admin/users"><i class="fa-solid fa-users me-1 text-warning"></i> Users</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark fw-medium px-3" href="/admin/bookings"><i class="fa-solid fa-receipt me-1 text-warning"></i> Bookings</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark fw-medium px-3" href="/admin/view_temples"><i class="fa-solid fa-church me-1 text-warning"></i> Temples</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark fw-medium px-3" href="/admin/view_feedback"><i class="fa-solid fa-comments me-1 text-warning"></i> Feedback</a></li>
+                </ul>
+                <div class="d-flex align-items-center gap-2">
+                    <a href="/" class="btn-premium"><i class="fa-solid fa-house"></i> Public Home</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <section class="py-5">
+        <div class="container py-3">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h1 class="dashboard-title-admin heritage-font mb-2">🛕 Control Dashboard</h1>
+                <p class="text-muted mx-auto" style="max-width: 600px;">Review platform transactions, user records, list modifications, and devotee feedback.</p>
+            </div>
+
+            <!-- Stats Metric Grid -->
+            <div class="row g-4 mb-5" data-aos="fade-up" data-aos-delay="100">
+                <!-- Total Users -->
+                <div class="col-xl-3 col-sm-6">
+                    <div class="card border-0 shadow-sm p-4 metric-card users bg-white text-start">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted small fw-semibold uppercase">Total Users</span>
+                            <div class="fs-4 text-primary"><i class="fa-solid fa-users"></i></div>
+                        </div>
+                        <h2 class="display-6 fw-bold mb-0 text-dark">{{ total_users }}</h2>
+                        <span class="small text-muted mt-2 d-block">Registered devotee profiles</span>
+                    </div>
+                </div>
+
+                <!-- Total Bookings -->
+                <div class="col-xl-3 col-sm-6">
+                    <div class="card border-0 shadow-sm p-4 metric-card bookings bg-white text-start">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted small fw-semibold uppercase">Total Bookings</span>
+                            <div class="fs-4 text-success"><i class="fa-solid fa-receipt"></i></div>
+                        </div>
+                        <h2 class="display-6 fw-bold mb-0 text-dark">{{ total_bookings }}</h2>
+                        <span class="small text-muted mt-2 d-block">All scheduled darshans</span>
+                    </div>
+                </div>
+
+                <!-- Approved -->
+                <div class="col-xl-3 col-sm-6">
+                    <div class="card border-0 shadow-sm p-4 metric-card approved bg-white text-start">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted small fw-semibold uppercase">Approved Permits</span>
+                            <div class="fs-4 text-warning"><i class="fa-solid fa-circle-check"></i></div>
+                        </div>
+                        <h2 class="display-6 fw-bold mb-0 text-dark">{{ approved }}</h2>
+                        <span class="small text-muted mt-2 d-block">Paid & authorized visits</span>
+                    </div>
+                </div>
+
+                <!-- Rejected -->
+                <div class="col-xl-3 col-sm-6">
+                    <div class="card border-0 shadow-sm p-4 metric-card rejected bg-white text-start">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted small fw-semibold uppercase">Rejected Permits</span>
+                            <div class="fs-4 text-danger"><i class="fa-solid fa-circle-xmark"></i></div>
+                        </div>
+                        <h2 class="display-6 fw-bold mb-0 text-dark">{{ rejected }}</h2>
+                        <span class="small text-muted mt-2 d-block">Denied / cancelled slots</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Control Actions -->
+            <div class="text-start mb-4" data-aos="fade-up">
+                <h3 class="fw-bold heritage-font text-warning mb-1"><i class="fa-solid fa-gears text-warning me-2"></i> Management Controls</h3>
+                <p class="text-muted">Direct operational panels for administrators.</p>
+            </div>
+            
+            <div class="row g-4" data-aos="fade-up" data-aos-delay="200">
+                <!-- Action 1: View Users -->
+                <div class="col-lg-3 col-md-6">
+                    <a href="/admin/users" class="text-decoration-none">
+                        <div class="p-4 admin-nav-card text-center text-dark h-100 d-flex flex-column justify-content-center">
+                            <div class="mb-3 text-primary fs-1"><i class="fa-solid fa-users"></i></div>
+                            <h5 class="fw-bold mb-2">Manage Users</h5>
+                            <p class="text-muted small mb-0">Display records of registered accounts.</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Action 2: View Bookings -->
+                <div class="col-lg-3 col-md-6">
+                    <a href="/admin/bookings" class="text-decoration-none">
+                        <div class="p-4 admin-nav-card text-center text-dark h-100 d-flex flex-column justify-content-center">
+                            <div class="mb-3 text-success fs-1"><i class="fa-solid fa-clipboard-list"></i></div>
+                            <h5 class="fw-bold mb-2">Manage Bookings</h5>
+                            <p class="text-muted small mb-0">Approve or reject pending entry permits.</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Action 3: Add Temple -->
+                <div class="col-lg-3 col-md-6">
+                    <a href="/admin/add_temple" class="text-decoration-none">
+                        <div class="p-4 admin-nav-card text-center text-dark h-100 d-flex flex-column justify-content-center">
+                            <div class="mb-3 text-warning fs-1"><i class="fa-solid fa-circle-plus"></i></div>
+                            <h5 class="fw-bold mb-2">Add Temple</h5>
+                            <p class="text-muted small mb-0">Insert new heritage temples into directory.</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Action 4: View Temples -->
+                <div class="col-lg-3 col-md-6">
+                    <a href="/admin/view_temples" class="text-decoration-none">
+                        <div class="p-4 admin-nav-card text-center text-dark h-100 d-flex flex-column justify-content-center">
+                            <div class="mb-3 text-info fs-1"><i class="fa-solid fa-church"></i></div>
+                            <h5 class="fw-bold mb-2">View Listed Temples</h5>
+                            <p class="text-muted small mb-0">Modify, search, or delete listed temples.</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Action 5: View Feedback -->
+                <div class="col-lg-3 col-md-6">
+                    <a href="/admin/view_feedback" class="text-decoration-none">
+                        <div class="p-4 admin-nav-card text-center text-dark h-100 d-flex flex-column justify-content-center">
+                            <div class="mb-3 text-secondary fs-1"><i class="fa-solid fa-comments"></i></div>
+                            <h5 class="fw-bold mb-2">Devotee Feedback</h5>
+                            <p class="text-muted small mb-0">Inspect rating reports and delete comments.</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-premium text-white py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0 text-muted">&copy; 2026 DarshanHub Administrator. Confidential & Devoted Workspace.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS Animations JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Custom Main JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

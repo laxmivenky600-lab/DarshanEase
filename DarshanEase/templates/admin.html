@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>DarshanHub Admin Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body{
+            background:#f4f7fc;
+        }
+
+        .dashboard-title{
+            text-align:center;
+            font-size:52px;
+            font-weight:800;
+            color:#ff9800;
+            margin-bottom:50px;
+        }
+
+        .card{
+            border:none;
+            border-radius:18px;
+            box-shadow:0 8px 20px rgba(0,0,0,.15);
+            transition:.3s;
+        }
+
+        .card:hover{
+            transform:translateY(-8px);
+        }
+
+        .number{
+            font-size:45px;
+            font-weight:bold;
+        }
+
+        .btn{
+            border-radius:12px;
+            margin-top:12px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="container py-5">
+
+<h1 class="dashboard-title">
+🛕 DarshanHub Admin Dashboard
+</h1>
+
+<div class="row g-4">
+
+<div class="col-md-3">
+<div class="card text-center p-4">
+<h4>Total Users</h4>
+<h1 class="number text-primary">{{total_users}}</h1>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card text-center p-4">
+<h4>Total Bookings</h4>
+<h1 class="number text-success">{{total_bookings}}</h1>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card text-center p-4">
+<h4>Approved</h4>
+<h1 class="number text-success">{{approved}}</h1>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card text-center p-4">
+<h4>Rejected</h4>
+<h1 class="number text-danger">{{rejected}}</h1>
+</div>
+</div>
+
+</div>
+
+<div class="text-center mt-5">
+
+<a href="/admin/users" class="btn btn-primary btn-lg m-2">
+👥 View Users
+</a>
+
+<a href="/admin/bookings" class="btn btn-success btn-lg m-2">
+📖 View Bookings
+</a>
+<a href="/admin/add_temple"
+class="btn btn-warning btn-lg m-2">
+➕ Add Temple
+</a>
+<a href="/admin/view_temples"
+class="btn btn-primary btn-lg m-2">
+🛕 View Temples
+</a>
+<a href="/" class="btn btn-dark btn-lg m-2">
+🏠 Home
+</a>
+<a href="/admin/view_feedback">
+    <button>View Feedback</button>
+</a>
+</div>
+
+</div>
+
+</body>
+
+</html>
