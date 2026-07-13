@@ -10,3 +10,4 @@ ticket_*.pdf
 .vscode/
 .idea/
 .DS_Store
+*.zip
