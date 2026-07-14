@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Temple</title>
+</head>
+<body>
+
+<h2>Search Temple</h2>
+
+<form method="POST">
+    <input type="text" name="temple" placeholder="Temple Name">
+    <button type="submit">Search</button>
+</form>
+
+{% if result %}
+
+<h2>Temple Details</h2>
+
+<p><b>Name:</b> {{ result[0] }}</p>
+
+<p><b>State:</b> {{ result[1] }}</p>
+
+<p><b>City:</b> {{ result[2] }}</p>
+
+<p><b>Opening:</b> {{ result[3] }}</p>
+
+<p><b>Closing:</b> {{ result[4] }}</p>
+
+<p><b>Description:</b> {{ result[5] }}</p>
+
+{% endif %}
+
+<br>
+
+<a href="/dashboard">Back to Dashboard</a>
+
+</body>
+</html>
